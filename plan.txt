@@ -1,0 +1,8 @@
+1. A user inputs their name into a text field (no password required)
+
+RETURNING USER ONLY
+2. A returning user is shown their ongoing match and asked if they want to
+continue or retire their maze
+
+3. A maze will be rendered as a new maze or will include the previously existing
+components of the board

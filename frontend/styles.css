@@ -1,0 +1,67 @@
+.grid-container {
+  /* width: 1px;
+  height: 1px; */
+  display: grid;
+
+
+  /* grid-template-columns: repeat(19, 4.6vw);
+  grid-template-rows: repeat(19, 4.6vh); */
+
+  /* minmax(8rem, 1fr) */
+}
+
+#login {
+  text-align: center;
+  margin-top: 500px;
+}
+
+input[type=text] {
+    width: 70%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    font-size: 48px;
+}
+
+select {
+    width: 70%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    font-size: 48px;
+}
+
+#difficultyLevel {
+  text-align: center;
+  margin-top: 500px;
+}
+
+.patchStyle {
+  /* background-color: yellow; */
+  border: 5px;
+  border-color: black;
+  /* text-align: center */
+}
+
+video {
+  position: fixed; right: 0; bottom: 0;
+  min-width: 100%; min-height: 100%;
+  width: auto; height: auto; z-index: -100;
+  background-size: cover;
+}
+
+.timer {
+  text-align: center;
+  background-color: red;
+}
+
+.time-font {
+  color: white;
+}
+
+.winner-font {
+  color: white;
+  font-size: 3.5em;
+  margin-left: 450px;
+  margin-top: 300px;
+}

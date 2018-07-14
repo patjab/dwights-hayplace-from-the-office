@@ -26,8 +26,6 @@ class MazeUser {
   }
 
   renderExit() {
-    console.log("MAZE:", this.maze)
-
     // REFACTOR LATER
     const finishEl = this.getElementAt(this.maze.maze_finish_row, this.maze.maze_finish_col)
 
@@ -82,6 +80,7 @@ class MazeUser {
       document.body.appendChild(soundEl)
       soundEl.play()
 
+      MazeController.renderHighScore(this.maze.id)
     }
   }
 }

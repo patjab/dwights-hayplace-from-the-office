@@ -67,9 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
             MazeController.renderMaze(currentMaze.size)
             adapter.createMazeUser({maze_user: {user_id: currentUser.id, maze_id: id}})
             .then(mazeUser => {
-              console.log(mazeUser)
               currentMazeUser = new MazeUser(mazeUser)
-              console.log("currentMazeUser is: ", currentMazeUser)
               currentMazeUser.renderMaze()
 
               CharacterController.renderKevin(currentMaze)
@@ -81,7 +79,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
               setTimeout(() => {
                 adapter.getMazeUser(id).then((data) => {
-                  console.log(data)
                   if (data.finished_time === null ) {
                     const gridContainerEl = document.querySelector(".grid-container")
                     gridContainerEl.innerHTML = ""
@@ -110,7 +107,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
               document.addEventListener('keydown', (e) => {
                 e.preventDefault()
-                console.log("CURR MAZE USER:", currentMazeUser)
                 let coordinate;
                 if ( e.key === "ArrowLeft" ) {
                   coordinate = {row: currentMazeUser.playersCurrentRow, col: currentMazeUser.playersCurrentCol-1}
@@ -122,9 +118,6 @@ document.addEventListener('DOMContentLoaded', () => {
                   coordinate = {row: currentMazeUser.playersCurrentRow+1, col: currentMazeUser.playersCurrentCol}
                 }
 
-                console.log("COORD: ", coordinate)
-                console.log(currentMazeUser.nothingExistsAt(coordinate))
-                console.log(currentMazeUser.staysInMaze(coordinate))
                 if (currentMazeUser.nothingExistsAt(coordinate) && currentMazeUser.staysInMaze(coordinate)) {
                   const oldPlayerPositionDivEl = document.querySelector("#player")
                   oldPlayerPositionDivEl.parentNode.removeChild(oldPlayerPositionDivEl)

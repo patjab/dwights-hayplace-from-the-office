@@ -13,7 +13,7 @@
 
 .selectionImage {
   width: 40%;
-  border-radius: 25px;
+  border-radius: 500px;
   height: auto;
 }
 
@@ -155,4 +155,61 @@ video {
   font-size: 3.5em;
   margin-left: 450px;
   margin-top: 300px;
+}
+
+#letterheadContainerDiv {
+  margin-left: 15%;
+  margin-right: 15%;
+  padding-left: 20px;
+  padding-right: 20px;
+  background-color: white;
+}
+
+#highScoreTitle {
+  font-family: Courier;
+  font-size: 28px;
+  margin-left: auto;
+  margin-right: auto;
+  font-weight: bold;
+  color: black;
+}
+
+#highScoreRoaster {
+  font-family: Courier;
+  font-size: 28px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  color: black;
+}
+
+#dunderMifflinLogo {
+  width: 200px;
+  height: "*";
+}
+
+#dunderMifflinLogoDiv {
+  font-family: Courier;
+  font-size: 28px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+#letterheadHeader {
+  font-family: Courier;
+  font-size: 16px;
+  text-align: right;
+}
+
+#letterheadGreeting {
+  font-family: Courier;
+  font-size: 16px;
+  text-align: left;
+}
+
+#letterheadEnding {
+  font-family: Courier;
+  font-size: 16px;
+  text-align: right;
 }

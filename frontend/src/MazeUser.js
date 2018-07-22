@@ -94,7 +94,7 @@ class MazeUser {
       this.renderWinningScreen()
       this.renderWinningAudio()
       const mazeController = new MazeController(document.querySelector('.grid-container'))
-      mazeController.renderHighScore(this.maze.id)
+      mazeController.renderHighScore(this.maze)
     }
   }
 

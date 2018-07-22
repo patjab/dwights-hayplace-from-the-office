@@ -1,146 +1,96 @@
 document.addEventListener('DOMContentLoaded', () => {
-
+  const gridContainerEl = document.querySelector(".grid-container")
   const adapter = new Adapter()
-  let currentUser
-  let currentMaze
-  let currentMazeUser
+  const userController = new UserController(gridContainerEl)
+  const mazeController = new MazeController(gridContainerEl)
+  const timeAllowed = 40000
+  let currentUser, currentMaze, currentMazeUser
 
-  // CREATE USERNAME FORM
-  const gridContainerInitEl = document.querySelector(".grid-container")
-  const signInFormEl = document.createElement("form")
-  signInFormEl.setAttribute("id", "login")
-
-  const usernameTextfieldEl = document.createElement("input")
-  usernameTextfieldEl.setAttribute("type", "text")
-  usernameTextfieldEl.setAttribute("id", "username")
-  usernameTextfieldEl.setAttribute("placeholder", "username")
-
-  const submitButtonEl = document.createElement("input")
-  submitButtonEl.setAttribute("type", "submit")
-
-  signInFormEl.appendChild(usernameTextfieldEl)
-  signInFormEl.appendChild(document.createElement("BR"))
-  signInFormEl.appendChild(document.createElement("BR"))
-  signInFormEl.appendChild(submitButtonEl)
-
-  gridContainerInitEl.appendChild(signInFormEl)
+  userController.setupVideoSignin()
+  const signInFormEl = userController.renderSignInForm()
 
   signInFormEl.addEventListener('submit', (e) => {
     e.preventDefault()
     const username = e.target.username.value
-    gridContainerInitEl.removeChild(signInFormEl)
 
-    // LATER WE CAN CHANGE THIS TO CREATE OR FIND USERNAME WHEN WE HAVE SESSIONS AVAILABLE
-    adapter.createUser({user: {username: username}}).then(data => {
-      currentUser = new User(data)
-      // ASK FOR LEVEL OF DIFFICULTY
-      const levelFormEl = document.createElement("form")
-      levelFormEl.setAttribute("id", "difficultyLevel")
+    if (username !== "") {
+      gridContainerEl.removeChild(signInFormEl)
 
-      const selectLevelEl = document.createElement("select")
-      selectLevelEl.setAttribute("id", "level")
+      adapter.createUser({user: {username: username}}).then(data => {
+        currentUser = new User(data)
 
-      adapter.getMazes().then(data => {
-        // APPENDING THE FORM
-        data.forEach((maze) => {
-          const difficultyOptionEl = document.createElement("option")
-          difficultyOptionEl.setAttribute("value", maze.id)
-          difficultyOptionEl.innerHTML = maze.difficulty
-          selectLevelEl.appendChild(difficultyOptionEl)
-        })
-        const submitLevelEl = document.createElement("input")
-        submitLevelEl.setAttribute("type", "submit")
+        adapter.getMazes().then(data => {
+          const numberOfMazes = mazeController.renderMazesForm(data)
 
-        levelFormEl.appendChild(selectLevelEl)
-        levelFormEl.appendChild(document.createElement("BR"))
-        levelFormEl.appendChild(document.createElement("BR"))
-        levelFormEl.appendChild(submitLevelEl)
-        gridContainerInitEl.appendChild(levelFormEl)
+          let currentSelection = 0
+          let previousSelection
 
-        levelFormEl.addEventListener('submit', (e) => {
-          e.preventDefault()
-          const id = e.target.level.value
-          gridContainerInitEl.removeChild(levelFormEl)
+          const firstImg = document.querySelector(`[data-img-index='${0}']`)
+          firstImg.src = firstImg.src.substring(0, firstImg.src.length-6) + 'Color.jpg'
 
-          adapter.getMaze(id).then((data) => {
-            currentMaze = new Maze(data)
-            MazeController.renderMaze(currentMaze.size)
-            adapter.createMazeUser({maze_user: {user_id: currentUser.id, maze_id: id}})
-            .then(mazeUser => {
-              currentMazeUser = new MazeUser(mazeUser)
-              currentMazeUser.renderMaze()
+          allImages = document.querySelectorAll(`.selectionImage`)
 
-              CharacterController.renderKevin(currentMaze)
+          document.addEventListener('keydown', (e) => {
+            if ( e.key === "ArrowRight" ) {
+              previousSelection = currentSelection
+              currentSelection++
+            }
+            if ( e.key === "ArrowLeft" ) {
+              previousSelection = currentSelection
+              currentSelection--
+            }
 
-              const startTime = Date.now()
-              let timeout = setTimeout(function() {}, 120 * 1000);
+            if ( e.key === "ArrowRight" || e.key === "ArrowLeft" ) {
+              if ( previousSelection < 0 ) {previousSelection = numberOfMazes}
+              if ( previousSelection > numberOfMazes-1 ) {previousSelection = 0}
 
-              const timeAllowed = 40000
+              if ( currentSelection < 0 ) {currentSelection = numberOfMazes-1}
+              if ( currentSelection > numberOfMazes-1 ) {currentSelection = 0}
 
-              setTimeout(() => {
-                adapter.getMazeUser(id).then((data) => {
-                  if (data.finished_time === null ) {
-                    const gridContainerEl = document.querySelector(".grid-container")
-                    gridContainerEl.innerHTML = ""
-                    const videoEl = document.createElement("video")
-                    videoEl.setAttribute("width", "auto")
-                    videoEl.setAttribute("height", "auto")
-                    videoEl.setAttribute("id", "loserVideo")
-                    videoEl.setAttribute("autoplay", "true")
+              let previousImg = document.querySelector(`[data-img-index='${previousSelection}']`)
+              previousImg.src = previousImg.src.substring(0, previousImg.src.length-9) + 'BW.jpg'
+              let previousImgText = document.querySelector(`[data-text-index='${previousSelection}']`)
+              previousImgText.style.color = '#666666'
 
-                    const sourceEl = document.createElement("source")
-                    sourceEl.setAttribute("src", "media/loser.mp4")
-                    sourceEl.setAttribute("id", "loserVideoSrc")
-                    sourceEl.setAttribute("type", "video/mp4")
-                    videoEl.appendChild(sourceEl)
-                    gridContainerEl.appendChild(videoEl)
-                  }
-                })
-              }, timeAllowed)
 
-              const timerEl = document.querySelector(".timer")
-              setInterval(() => {
-                if (Math.floor((timeAllowed-(Date.now()-startTime))/1000) >= 0) {
-                  timerEl.innerHTML = `<h1 class='time-font'>${Math.floor((timeAllowed-(Date.now()-startTime))/1000)} second remain</h1>`
-                }
-              }, 500)
+              let currentImg = document.querySelector(`[data-img-index='${currentSelection}']`)
+              currentImg.src = currentImg.src.substring(0, currentImg.src.length-6) + 'Color.jpg'
+              let currentImgText = document.querySelector(`[data-text-index='${currentSelection}']`)
+              currentImgText.style.color = '#FFFFFF'
+            }
 
-              document.addEventListener('keydown', (e) => {
-                e.preventDefault()
-                let coordinate;
-                if ( e.key === "ArrowLeft" ) {
-                  coordinate = {row: currentMazeUser.playersCurrentRow, col: currentMazeUser.playersCurrentCol-1}
-                } else if ( e.key === "ArrowRight" ) {
-                  coordinate = {row: currentMazeUser.playersCurrentRow, col: currentMazeUser.playersCurrentCol+1}
-                } else if ( e.key === "ArrowUp" ) {
-                  coordinate = {row: currentMazeUser.playersCurrentRow-1, col: currentMazeUser.playersCurrentCol}
-                } else if ( e.key === "ArrowDown" ) {
-                  coordinate = {row: currentMazeUser.playersCurrentRow+1, col: currentMazeUser.playersCurrentCol}
+            document.addEventListener('keydown', (e) => {
+              e.preventDefault()
+              let choosenLevelEl = document.querySelector(`[data-img-index='${currentSelection}']`)
+
+              if (e.key === 'Enter') {
+                gridContainerEl.removeChild(document.querySelector(".signage"))
+                gridContainerEl.removeChild(document.querySelector("#themeVideo"))
+
+                const id = choosenLevelEl.dataset.mazeId // SUCH A CHEAP FIX, FIX THIS LATER
+                gridContainerEl.removeChild(document.querySelector("#mazeListDiv"))
+
+                adapter.getMaze(id)
+                .then((data) => {
+                  currentMaze = new Maze(data)
+                  mazeController.renderMaze(currentMaze.size)
+                  adapter.createMazeUser({maze_user: {user_id: currentUser.id, maze_id: currentMaze.id}})
+                  .then(mazeUser => {
+                    currentMazeUser = new MazeUser(mazeUser)
+                    currentMazeUser.renderMaze()
+                    CharacterController.renderKevin(currentMaze)
+                    currentMazeUser.asyncCheckLoser(timeAllowed)
+                    currentMazeUser.asyncTimer(timeAllowed)
+                    document.addEventListener('keydown', currentMazeUser.move.bind(currentMazeUser))})
+                  })
                 }
 
-                if (currentMazeUser.nothingExistsAt(coordinate) && currentMazeUser.staysInMaze(coordinate)) {
-                  const oldPlayerPositionDivEl = document.querySelector("#player")
-                  oldPlayerPositionDivEl.parentNode.removeChild(oldPlayerPositionDivEl)
-
-                  currentMazeUser.playersCurrentRow = coordinate.row
-                  currentMazeUser.playersCurrentCol = coordinate.col
-
-                  currentMazeUser.renderPlayer()
-                  currentMazeUser.playerFinish(startTime)
-                } else {
-                  const soundEl = document.createElement("audio")
-                  soundEl.src = "./media/idiot.mp3"
-                  document.body.appendChild(soundEl)
-                  soundEl.play()
-
-                }
               })
-
-
-            })
           })
+
         })
       })
-    })
+    }
+
   })
 })

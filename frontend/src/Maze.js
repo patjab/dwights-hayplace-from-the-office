@@ -1,8 +1,8 @@
 class Maze {
   constructor(maze) {
     this.id = maze.id
-    this.characters = maze.characters // from the has_many relationships that Maze has
-    this.hayPatches = maze.hay_patches // from the has_many relationships that Maze has
+    this.characters = maze.characters
+    this.hayPatches = maze.hay_patches
     this.size = maze.size
     this.initialRow = maze.initial_row
     this.initialCol = maze.initial_col
@@ -15,8 +15,7 @@ class Maze {
   }
 
   randomEmptyPosition() {
-    let potentialRow
-    let potentialCol
+    let potentialRow, potentialCol
     do {
       potentialRow = Math.floor(Math.random()*this.size)
       potentialCol = Math.floor(Math.random()*this.size)

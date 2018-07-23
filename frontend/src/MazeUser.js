@@ -68,20 +68,35 @@ class MazeUser {
   }
 
   renderWinningScreen() {
-    document.body.style['background-image'] = 'url("./media/dwightPortrait.jpg")'
-    document.body.style['background-repeat'] = 'no-repeat'
-    document.body.style['background-size'] = 'cover'
-    const timerEl = document.querySelector('.timer')
-    timerEl.parentNode.removeChild(timerEl)
+    while (document.body.firstChild) {document.body.removeChild(document.body.firstChild)}
 
-    document.querySelector('.grid-container').innerHTML = `<h1 class='winner-font'>I am your Hay King. Accomplished in ${this.finished_time}s</h1>`
-    const grid = document.querySelector('.grid-container')
-    grid.classList.toggle('grid-container')
+    document.body.style['background-image'] = 'url("./media/hayBackground.jpg")'
+    document.body.style['background-repeat'] = 'repeat'
+    document.body.style['background-size'] = 'auto'
+
+    const winnerDivEl = document.createElement("DIV")
+    winnerDivEl.setAttribute("id", "winnerDiv")
+
+    const dwightPortraitImgEl = document.createElement("IMG")
+    dwightPortraitImgEl.src = './media/dwightPortrait.jpg'
+    dwightPortraitImgEl.setAttribute("id", "dwightPortrait")
+
+    winnerDivEl.appendChild(dwightPortraitImgEl)
+    winnerDivEl.appendChild(document.createElement("BR"))
+    winnerDivEl.appendChild(document.createTextNode(this.user.username))
+    winnerDivEl.appendChild(document.createTextNode(" is your Hay King."))
+    winnerDivEl.appendChild(document.createElement("BR"))
+    winnerDivEl.appendChild(document.createTextNode("Accomplished in "))
+    winnerDivEl.appendChild(document.createTextNode(this.finished_time))
+    winnerDivEl.appendChild(document.createTextNode("s."))
+    winnerDivEl.appendChild(document.createElement("BR"))
+    winnerDivEl.appendChild(document.createElement("BR"))
+    winnerDivEl.appendChild(document.createTextNode("Press [ENTER] for high scores"))
+
+    document.body.appendChild(winnerDivEl)
   }
 
   renderWinningAudio() {
-    const audioEl = document.querySelector('audio')
-    audioEl.parentNode.removeChild(audioEl)
     const soundEl = document.createElement("audio")
     soundEl.src = "./media/hayking.mp3"
     document.body.appendChild(soundEl)
@@ -93,7 +108,7 @@ class MazeUser {
       this.stopTheClock()
       this.renderWinningScreen()
       this.renderWinningAudio()
-      const mazeController = new MazeController(document.querySelector('.grid-container'))
+      const mazeController = new MazeController(document.querySelector('#winnerDiv'))
       mazeController.renderHighScore(this.maze)
     }
   }
@@ -114,7 +129,7 @@ class MazeUser {
   }
 
   attemptMove(coordinate) {
-    if (this.nothingExistsAt(coordinate) && this.staysInMaze(coordinate)) {
+    if (this.nothingExistsAt(coordinate) && this.staysInMaze(coordinate) && document.querySelector("#idiotSoundEl")) {
       const oldPlayerPositionDivEl = document.querySelector("#player")
       oldPlayerPositionDivEl.parentNode.removeChild(oldPlayerPositionDivEl)
 
@@ -123,16 +138,8 @@ class MazeUser {
 
       this.renderPlayer()
       this.playerFinish()
-    } else {
-      if ( !!document.querySelector("#idiotSoundEl") ) {
-        const prevIdiotSoundEl = document.querySelector("#idiotSoundEl")
-        prevIdiotSoundEl.parentNode.removeChild(prevIdiotSoundEl)
-      }
-      const idiotSoundEl = document.createElement("audio")
-      idiotSoundEl.setAttribute("id", "idiotSoundEl")
-      idiotSoundEl.src = "./media/idiot.mp3"
-      document.body.appendChild(idiotSoundEl)
-      idiotSoundEl.play()
+    } else if (document.querySelector("#idiotSoundEl")) {
+      document.querySelector("#idiotSoundEl").play()
     }
   }
 
@@ -152,10 +159,13 @@ class MazeUser {
 
   asyncTimer(timeAllowed) {
     const timerEl = document.querySelector(".timer")
-    const timerRefreshInterval = 500
+    const timerRefreshInterval = 250
     setInterval(() => {
-      if (Math.floor((timeAllowed-(Date.now()-this.startTime))/1000) >= 0) {
-        timerEl.innerHTML = `<h1 class='time-font'>${Math.floor((timeAllowed-(Date.now()-this.startTime))/1000)} second remain</h1>`
+      const currentTimeLeft = Math.floor((timeAllowed-(Date.now()-this.startTime))/1000)
+      if (currentTimeLeft >= 2) {
+        timerEl.innerHTML = `<h1 class='time-font'>${currentTimeLeft} seconds remain</h1>`
+      } else if (currentTimeLeft === 1 ){
+        timerEl.innerHTML = `<h1 class='time-font'>${currentTimeLeft} second remains</h1>`
       }
     }, timerRefreshInterval)
   }

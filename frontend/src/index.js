@@ -6,6 +6,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const timeAllowed = 40000
   let currentUser, currentMaze, currentMazeUser
 
+  // Until event removers are installed
+  let finishedSelecting = false
+
   userController.setupVideoSignin()
   const signInFormEl = userController.renderSignInForm()
 
@@ -31,16 +34,17 @@ document.addEventListener('DOMContentLoaded', () => {
           allImages = document.querySelectorAll(`.selectionImage`)
 
           document.addEventListener('keydown', (e) => {
-            if ( e.key === "ArrowRight" ) {
+
+            if ( e.key === "ArrowRight" && !finishedSelecting) {
               previousSelection = currentSelection
               currentSelection++
             }
-            if ( e.key === "ArrowLeft" ) {
+            if ( e.key === "ArrowLeft" && !finishedSelecting) {
               previousSelection = currentSelection
               currentSelection--
             }
 
-            if ( e.key === "ArrowRight" || e.key === "ArrowLeft" ) {
+            if ( (e.key === "ArrowRight" || e.key === "ArrowLeft") && !finishedSelecting) {
               if ( previousSelection < 0 ) {previousSelection = numberOfMazes}
               if ( previousSelection > numberOfMazes-1 ) {previousSelection = 0}
 
@@ -61,14 +65,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
             document.addEventListener('keydown', (e) => {
               e.preventDefault()
-              let choosenLevelEl = document.querySelector(`[data-img-index='${currentSelection}']`)
 
-              if (e.key === 'Enter') {
-                gridContainerEl.removeChild(document.querySelector(".signage"))
-                gridContainerEl.removeChild(document.querySelector("#themeVideo"))
-
+              if (e.key === 'Enter' && !finishedSelecting) {
+                finishedSelecting = true
+                let choosenLevelEl = document.querySelector(`[data-img-index='${currentSelection}']`)
                 const id = choosenLevelEl.dataset.mazeId // SUCH A CHEAP FIX, FIX THIS LATER
-                gridContainerEl.removeChild(document.querySelector("#mazeListDiv"))
+                while (gridContainerEl.firstChild) {gridContainerEl.removeChild(gridContainerEl.firstChild)}
 
                 adapter.getMaze(id)
                 .then((data) => {

@@ -60,25 +60,48 @@
   text-align: center;
   color: white;
   font-family: Tahoma;
-  @-webkit-keyframes blink {
-    from {
-        opacity: 1.0;
-    }
-    to {
-        opacity: 0.0;
-    }
-  }
-  blink {
-      -webkit-animation-name: blink;
-      -webkit-animation-iteration-count: infinite;
-      -webkit-animation-timing-function: cubic-bezier(1.0, 0, 0, 1.0);
-      -webkit-animation-duration: 1s;
-  }
+}
+
+.blink {
+	-webkit-animation: blink 2s linear infinite;
+	-moz-animation: blink 2s linear infinite;
+	-ms-animation: blink 2s linear infinite;
+	-o-animation: blink 2s linear infinite;
+	 animation: blink 2s linear infinite;
+}
+@-webkit-keyframes blink {
+	0% { opacity: 1; }
+	50% { opacity: 1; }
+	50.01% { opacity: 0; }
+	100% { opacity: 0; }
+}
+@-moz-keyframes blink {
+	0% { opacity: 1; }
+	50% { opacity: 1; }
+	50.01% { opacity: 0; }
+	100% { opacity: 0; }
+}
+@-ms-keyframes blink {
+	0% { opacity: 1; }
+	50% { opacity: 1; }
+	50.01% { opacity: 0; }
+	100% { opacity: 0; }
+}
+@-o-keyframes blink {
+	0% { opacity: 1; }
+	50% { opacity: 1; }
+	50.01% { opacity: 0; }
+	100% { opacity: 0; }
+}
+@keyframes blink {
+	0% { opacity: 1; }
+	50% { opacity: 1; }
+	50.01% { opacity: 0; }
+	100% { opacity: 0; }
 }
 
 #login {
   text-align: center;
-  /* margin-top: 500px; */
 }
 
 input[type=text] {
@@ -94,7 +117,7 @@ input[type=text] {
     opacity: 0.6;
 }
 
-input[type=submit] {
+#highScoreButton {
   width: 70%;
   padding: 12px 20px;
   margin: 8px 0;
@@ -143,7 +166,9 @@ video {
 
 .timer {
   text-align: center;
-  background-color: red;
+  background-color: orange;
+  border-radius: 20px;
+  font-family: Impact;
 }
 
 .time-font {
@@ -151,10 +176,32 @@ video {
 }
 
 .winner-font {
+  font-family: Impact;
   color: white;
   font-size: 3.5em;
-  margin-left: 450px;
-  margin-top: 300px;
+  /* margin-left: 450px;
+  margin-top: 300px; */
+}
+
+#winnerDiv {
+  padding-top: 40px;
+  margin-left: 10%;
+  margin-right: 10%;
+  font-family: Impact;
+  color: white;
+  font-size: 3.5em;
+  background-color: #ffae42;
+  opacity: 0.9;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  border-radius: 50px;
+}
+
+#dwightPortrait {
+  border-radius: 50px;
+  width: 60%;
+  height: 60%;
 }
 
 #letterheadContainerDiv {
@@ -163,6 +210,8 @@ video {
   padding-left: 20px;
   padding-right: 20px;
   background-color: white;
+  box-shadow: 10px 15px;
+
 }
 
 #highScoreTitle {

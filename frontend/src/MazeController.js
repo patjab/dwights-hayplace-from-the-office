@@ -5,6 +5,11 @@ class MazeController {
   }
 
   renderMaze(size) {
+    const idiotSoundEl = document.createElement("audio")
+    idiotSoundEl.setAttribute("id", "idiotSoundEl")
+    idiotSoundEl.src = "./media/idiot.mp3"
+    document.body.appendChild(idiotSoundEl)
+
     this.gridContainerEl.style['grid-template-columns'] = `repeat(${size}, ${100/(size+2)}vw)`
     this.gridContainerEl.style['grid-template-rows'] = `repeat(${size}, ${100/(size+2)}vh)`
 
@@ -20,110 +25,132 @@ class MazeController {
   }
 
   renderHighScore(currentMaze) {
+    // Before installing event removers
+    let inHighScore = false
+
     const mazeId = currentMaze.id
     const mazeName = currentMaze.difficulty
-    const resultsContainerEl = document.querySelector('div')
+
+    const resultsContainerEl = document.createElement('DIV')
+    document.body.appendChild(resultsContainerEl)
     resultsContainerEl.setAttribute("id", "letterheadContainerDiv")
 
-    const highScoreButtonEl = document.createElement("button")
-    highScoreButtonEl.innerHTML = "High Scores"
-    resultsContainerEl.appendChild(highScoreButtonEl)
+    const winnerDivEl = document.querySelector("#winnerDiv")
 
-    highScoreButtonEl.addEventListener('click', () => {
-      document.body.style['background-image'] = ''
-      document.body.style['background-color'] = 'black'
+    winnerDivEl.appendChild(document.createElement("BR"))
 
-      this.adapter.getMazeUsers().then(data => {
-        return data.filter(mazeUser => {
-          return (mazeUser.finished_time !== null) && (mazeUser.maze.id === mazeId)
-        }).sort((x, y) => {
-          return x.finished_time - y.finished_time
+    document.addEventListener('keydown', (e) => {
+      if ( e.key === 'Enter' && !inHighScore) {
+        inHighScore = true
+        document.body.style['background-image'] = 'url("./media/hayBackground.jpg")'
+
+        // THIS IS NOT DYNAMIC
+        winnerDivEl.parentNode.removeChild(winnerDivEl)
+
+        this.adapter.getMazeUsers().then(data => {
+          return data.filter(mazeUser => {
+            return (mazeUser.finished_time !== null) && (mazeUser.maze.id === mazeId)
+          }).sort((x, y) => {
+            return x.finished_time - y.finished_time
+          })
         })
-      })
-      .then(mazeUsers => {
-        while ( resultsContainerEl.firstChild ) { resultsContainerEl.removeChild(resultsContainerEl.firstChild) }
-        const currentDate = new Date()
-        const formattedDate = currentDate.toLocaleDateString('en-us', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
+        .then(mazeUsers => {
+          while ( resultsContainerEl.firstChild ) { resultsContainerEl.removeChild(resultsContainerEl.firstChild) }
+          const currentDate = new Date()
+          const formattedDate = currentDate.toLocaleDateString('en-us', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
 
-        const dunderMifflinLogoDivEl = document.createElement("DIV")
-        dunderMifflinLogoDivEl.setAttribute("id", "dunderMifflinLogoDiv")
+          const dunderMifflinLogoDivEl = document.createElement("DIV")
+          dunderMifflinLogoDivEl.setAttribute("id", "dunderMifflinLogoDiv")
 
-        const dunderMifflinLogoImgEl = document.createElement("IMG")
-        dunderMifflinLogoImgEl.setAttribute("id", "dunderMifflinLogo")
-        dunderMifflinLogoImgEl.setAttribute("src", "./media/dunderMifflinLogo.jpg")
+          const dunderMifflinLogoImgEl = document.createElement("IMG")
+          dunderMifflinLogoImgEl.setAttribute("id", "dunderMifflinLogo")
+          dunderMifflinLogoImgEl.setAttribute("src", "./media/dunderMifflinLogo.jpg")
 
-        const letterheadHeaderDivEl = document.createElement("DIV")
-        letterheadHeaderDivEl.setAttribute("id", "letterheadHeader")
+          const letterheadHeaderDivEl = document.createElement("DIV")
+          letterheadHeaderDivEl.setAttribute("id", "letterheadHeader")
 
-        const letterheadGreetingDivEl = document.createElement("DIV")
-        letterheadGreetingDivEl.setAttribute("id", "letterheadGreeting")
+          const letterheadGreetingDivEl = document.createElement("DIV")
+          letterheadGreetingDivEl.setAttribute("id", "letterheadGreeting")
 
-        const roasterOfHighScoresDivEl = document.createElement("DIV")
-        roasterOfHighScoresDivEl.setAttribute("id", "highScoreRoaster")
+          const roasterOfHighScoresDivEl = document.createElement("DIV")
+          roasterOfHighScoresDivEl.setAttribute("id", "highScoreRoaster")
 
-        const letterheadEndingDivEl = document.createElement("DIV")
-        letterheadEndingDivEl.setAttribute("id", "letterheadEnding")
+          const letterheadEndingDivEl = document.createElement("DIV")
+          letterheadEndingDivEl.setAttribute("id", "letterheadEnding")
 
-        const mazeNameEl = document.createElement("SPAN")
-        mazeNameEl.style['font-weight'] = "bold"
-        mazeNameEl.appendChild(document.createTextNode(mazeName))
+          const mazeNameEl = document.createElement("SPAN")
+          mazeNameEl.style['font-weight'] = "bold"
+          mazeNameEl.appendChild(document.createTextNode(mazeName))
 
-        dunderMifflinLogoDivEl.appendChild(document.createElement("BR"))
-        dunderMifflinLogoDivEl.appendChild(dunderMifflinLogoImgEl)
+          const toTheEl = document.createElement("SPAN")
+          toTheEl.style['text-decoration'] = "line-through"
+          toTheEl.appendChild(document.createTextNode("to the"))
 
-        letterheadHeaderDivEl.appendChild(document.createElement("BR"))
-        letterheadHeaderDivEl.appendChild(document.createTextNode("Dwight K. Schrute"))
-        letterheadHeaderDivEl.appendChild(document.createElement("BR"))
-        letterheadHeaderDivEl.appendChild(document.createTextNode("Assistant (to the) Regional Manager"))
-        letterheadHeaderDivEl.appendChild(document.createElement("BR"))
-        letterheadHeaderDivEl.appendChild(document.createTextNode("1725 Slough Avenue"))
-        letterheadHeaderDivEl.appendChild(document.createElement("BR"))
-        letterheadHeaderDivEl.appendChild(document.createTextNode("Scranton, PA 18505-7427"))
-        letterheadHeaderDivEl.appendChild(document.createElement("BR"))
-        letterheadHeaderDivEl.appendChild(document.createElement("BR"))
-        letterheadHeaderDivEl.appendChild(document.createTextNode(formattedDate))
-        letterheadHeaderDivEl.appendChild(document.createElement("BR"))
+          const toTheEl2 = document.createElement("SPAN")
+          toTheEl2.style['text-decoration'] = "line-through"
+          toTheEl2.appendChild(document.createTextNode("to the"))
 
-        letterheadGreetingDivEl.appendChild(document.createElement("BR"))
-        letterheadGreetingDivEl.appendChild(document.createElement("BR"))
-        letterheadGreetingDivEl.appendChild(document.createElement("BR"))
-        letterheadGreetingDivEl.appendChild(document.createTextNode("To Whom It May Concern: "))
-        letterheadGreetingDivEl.appendChild(document.createElement("BR"))
-        letterheadGreetingDivEl.appendChild(document.createElement("BR"))
-        letterheadGreetingDivEl.appendChild(document.createTextNode("I am pleased to announce that the following people have completed "))
-        letterheadGreetingDivEl.appendChild(mazeNameEl)
-        letterheadGreetingDivEl.appendChild(document.createTextNode(" in record time:"))
-        letterheadGreetingDivEl.appendChild(document.createElement("BR"))
-        letterheadGreetingDivEl.appendChild(document.createElement("BR"))
+          dunderMifflinLogoDivEl.appendChild(document.createElement("BR"))
+          dunderMifflinLogoDivEl.appendChild(dunderMifflinLogoImgEl)
 
-        mazeUsers.forEach((mazeUser, index) => {
-          if (index < 7) {
-            const userScoreText = document.createTextNode(`${mazeUser.user.username} (${mazeUser.finished_time} seconds)`)
-            roasterOfHighScoresDivEl.appendChild(userScoreText)
-            roasterOfHighScoresDivEl.appendChild(document.createElement("BR"))
-          }
+          letterheadHeaderDivEl.appendChild(document.createElement("BR"))
+          letterheadHeaderDivEl.appendChild(document.createTextNode("Dwight K. Schrute"))
+          letterheadHeaderDivEl.appendChild(document.createElement("BR"))
+          letterheadHeaderDivEl.appendChild(document.createTextNode("Assistant "))
+          letterheadHeaderDivEl.appendChild(toTheEl)
+          letterheadHeaderDivEl.appendChild(document.createTextNode((" Regional Manager")))
+          letterheadHeaderDivEl.appendChild(document.createElement("BR"))
+          letterheadHeaderDivEl.appendChild(document.createTextNode("1725 Slough Avenue"))
+          letterheadHeaderDivEl.appendChild(document.createElement("BR"))
+          letterheadHeaderDivEl.appendChild(document.createTextNode("Scranton, PA 18505-7427"))
+          letterheadHeaderDivEl.appendChild(document.createElement("BR"))
+          letterheadHeaderDivEl.appendChild(document.createElement("BR"))
+          letterheadHeaderDivEl.appendChild(document.createTextNode(formattedDate))
+          letterheadHeaderDivEl.appendChild(document.createElement("BR"))
+
+          letterheadGreetingDivEl.appendChild(document.createElement("BR"))
+          letterheadGreetingDivEl.appendChild(document.createElement("BR"))
+          letterheadGreetingDivEl.appendChild(document.createElement("BR"))
+          letterheadGreetingDivEl.appendChild(document.createTextNode("To Whom It May Concern: "))
+          letterheadGreetingDivEl.appendChild(document.createElement("BR"))
+          letterheadGreetingDivEl.appendChild(document.createElement("BR"))
+          letterheadGreetingDivEl.appendChild(document.createTextNode("I am pleased to announce that the following people have completed "))
+          letterheadGreetingDivEl.appendChild(mazeNameEl)
+          letterheadGreetingDivEl.appendChild(document.createTextNode(" in record time:"))
+          letterheadGreetingDivEl.appendChild(document.createElement("BR"))
+          letterheadGreetingDivEl.appendChild(document.createElement("BR"))
+
+          mazeUsers.forEach((mazeUser, index) => {
+            if (index < 7) {
+              const userScoreText = document.createTextNode(`${mazeUser.user.username} (${mazeUser.finished_time} seconds)`)
+              roasterOfHighScoresDivEl.appendChild(userScoreText)
+              roasterOfHighScoresDivEl.appendChild(document.createElement("BR"))
+            }
+          })
+
+          letterheadEndingDivEl.appendChild(document.createElement("BR"))
+          letterheadEndingDivEl.appendChild(document.createElement("BR"))
+          letterheadEndingDivEl.appendChild(document.createElement("BR"))
+          letterheadEndingDivEl.appendChild(document.createTextNode("Sincerely,"))
+          letterheadEndingDivEl.appendChild(document.createElement("BR"))
+          letterheadEndingDivEl.appendChild(document.createElement("BR"))
+          letterheadEndingDivEl.appendChild(document.createElement("BR"))
+          letterheadEndingDivEl.appendChild(document.createTextNode("Dwight K. Schrute"))
+          letterheadEndingDivEl.appendChild(document.createElement("BR"))
+          letterheadEndingDivEl.appendChild(document.createTextNode("Assistant "))
+          letterheadEndingDivEl.appendChild(toTheEl2)
+          letterheadEndingDivEl.appendChild(document.createTextNode((" Regional Manager")))
+          letterheadEndingDivEl.appendChild(document.createElement("BR"))
+          letterheadEndingDivEl.appendChild(document.createElement("BR"))
+          letterheadEndingDivEl.appendChild(document.createElement("BR"))
+
+          resultsContainerEl.appendChild(dunderMifflinLogoDivEl)
+          resultsContainerEl.appendChild(letterheadHeaderDivEl)
+          resultsContainerEl.appendChild(letterheadGreetingDivEl)
+          resultsContainerEl.appendChild(roasterOfHighScoresDivEl)
+          resultsContainerEl.appendChild(letterheadEndingDivEl)
         })
-
-        letterheadEndingDivEl.appendChild(document.createElement("BR"))
-        letterheadEndingDivEl.appendChild(document.createElement("BR"))
-        letterheadEndingDivEl.appendChild(document.createElement("BR"))
-        letterheadEndingDivEl.appendChild(document.createTextNode("Sincerely,"))
-        letterheadEndingDivEl.appendChild(document.createElement("BR"))
-        letterheadEndingDivEl.appendChild(document.createElement("BR"))
-        letterheadEndingDivEl.appendChild(document.createElement("BR"))
-        letterheadEndingDivEl.appendChild(document.createTextNode("Dwight K. Schrute"))
-        letterheadEndingDivEl.appendChild(document.createElement("BR"))
-        letterheadEndingDivEl.appendChild(document.createTextNode("Assistant (to the) Regional Manager"))
-        letterheadEndingDivEl.appendChild(document.createElement("BR"))
-        letterheadEndingDivEl.appendChild(document.createElement("BR"))
-        letterheadEndingDivEl.appendChild(document.createElement("BR"))
-
-        resultsContainerEl.appendChild(dunderMifflinLogoDivEl)
-        resultsContainerEl.appendChild(letterheadHeaderDivEl)
-        resultsContainerEl.appendChild(letterheadGreetingDivEl)
-        resultsContainerEl.appendChild(roasterOfHighScoresDivEl)
-        resultsContainerEl.appendChild(letterheadEndingDivEl)
-      })
+      }
     })
   }
 

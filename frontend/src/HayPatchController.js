@@ -4,7 +4,6 @@ class HayPatchController {
     const adapter = new Adapter()
     adapter.getMaze(maze.id).then((data) => {
       const mazeObj = new Maze(data)
-      console.log(mazeObj)
 
       data.hay_patches.forEach((hayPatch) => {
         const hayPatchObj = new HayPatch(hayPatch)

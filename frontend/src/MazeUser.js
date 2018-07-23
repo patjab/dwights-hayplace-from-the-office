@@ -6,6 +6,11 @@ class MazeUser {
     this.finished_time = mazeUser.finished_time
     this.user = mazeUser.user
     this.maze = mazeUser.maze
+    this.startTime = Date.now()
+  }
+
+  completedMaze() {
+    return this.finished_time !== null
   }
 
   getElementAt(row, col) {
@@ -26,11 +31,7 @@ class MazeUser {
   }
 
   renderExit() {
-    console.log("MAZE:", this.maze)
-
-    // REFACTOR LATER
     const finishEl = this.getElementAt(this.maze.maze_finish_row, this.maze.maze_finish_col)
-
     const dundieImgEl = document.createElement("IMG");
     dundieImgEl.setAttribute("id", "dundie");
     dundieImgEl.setAttribute("src", "./media/dundie.jpg");
@@ -41,7 +42,6 @@ class MazeUser {
 
   renderMaze() {
     HayPatchController.renderHayPatches(this.maze)
-
     this.renderPlayer()
     this.renderExit()
   }
@@ -49,8 +49,7 @@ class MazeUser {
   nothingExistsAt(inputCoordinate) {
     try {
       return (this.getElementAt(inputCoordinate.row, inputCoordinate.col).children.length === 0) || (inputCoordinate.row === this.maze.maze_finish_row && inputCoordinate.col === this.maze.maze_finish_col)
-    } catch(err) {
-    }
+    } catch(err) {}
   }
 
   staysInMaze(inputCoordinate) {
@@ -58,30 +57,116 @@ class MazeUser {
     && (inputCoordinate.col >= 0) && (inputCoordinate.col < this.maze.size))
   }
 
-  playerFinish(startTime) {
-    if ((this.playersCurrentRow===this.maze.maze_finish_row) && (this.playersCurrentCol===this.maze.maze_finish_col)) {
-      const endTime = Date.now()
-      const duration = Math.floor((endTime - startTime)/1000)
-      const adapter = new Adapter()
-      adapter.createTime(this.id, duration)
+  finishedPosition() {
+    return (this.playersCurrentRow===this.maze.maze_finish_row) && (this.playersCurrentCol===this.maze.maze_finish_col)
+  }
 
-      document.body.style['background-image'] = 'url("./media/dwightPortrait.jpg")'
-      document.body.style['background-repeat'] = 'no-repeat'
-      document.body.style['background-size'] = 'cover'
-      const timerEl = document.querySelector('.timer')
-      timerEl.remove()
+  stopTheClock() {
+    this.finished_time = Math.floor((Date.now() - this.startTime)/1000)
+    const adapter = new Adapter()
+    adapter.createTime(this.id, this.finished_time)
+  }
 
-      document.querySelector('.grid-container').innerHTML = `<h1 class='winner-font'>I am your Hay King. Accomplished in ${duration}s</h1>`
-      const grid = document.querySelector('.grid-container')
-      grid.classList.toggle('grid-container')
+  renderWinningScreen() {
+    while (document.body.firstChild) {document.body.removeChild(document.body.firstChild)}
 
-      const audioEl = document.querySelector('audio')
-      audioEl.parentNode.removeChild(audioEl)
-      const soundEl = document.createElement("audio")
-      soundEl.src = "./media/hayking.mp3"
-      document.body.appendChild(soundEl)
-      soundEl.play()
+    document.body.style['background-image'] = 'url("./media/hayBackground.jpg")'
+    document.body.style['background-repeat'] = 'repeat'
+    document.body.style['background-size'] = 'auto'
 
+    const winnerDivEl = document.createElement("DIV")
+    winnerDivEl.setAttribute("id", "winnerDiv")
+
+    const dwightPortraitImgEl = document.createElement("IMG")
+    dwightPortraitImgEl.src = './media/dwightPortrait.jpg'
+    dwightPortraitImgEl.setAttribute("id", "dwightPortrait")
+
+    winnerDivEl.appendChild(dwightPortraitImgEl)
+    winnerDivEl.appendChild(document.createElement("BR"))
+    winnerDivEl.appendChild(document.createTextNode(this.user.username))
+    winnerDivEl.appendChild(document.createTextNode(" is your Hay King."))
+    winnerDivEl.appendChild(document.createElement("BR"))
+    winnerDivEl.appendChild(document.createTextNode("Accomplished in "))
+    winnerDivEl.appendChild(document.createTextNode(this.finished_time))
+    winnerDivEl.appendChild(document.createTextNode("s."))
+    winnerDivEl.appendChild(document.createElement("BR"))
+    winnerDivEl.appendChild(document.createElement("BR"))
+    winnerDivEl.appendChild(document.createTextNode("Press [ENTER] for high scores"))
+
+    document.body.appendChild(winnerDivEl)
+  }
+
+  renderWinningAudio() {
+    const soundEl = document.createElement("audio")
+    soundEl.src = "./media/hayking.mp3"
+    document.body.appendChild(soundEl)
+    soundEl.play()
+  }
+
+  playerFinish() {
+    if (this.finishedPosition()) {
+      this.stopTheClock()
+      this.renderWinningScreen()
+      this.renderWinningAudio()
+      const mazeController = new MazeController(document.querySelector('#winnerDiv'))
+      mazeController.renderHighScore(this.maze)
     }
+  }
+
+  translateKeyEventIntoCoordinate(e) {
+    e.preventDefault()
+    let coordinate;
+    if ( e.key === "ArrowLeft" ) {
+      coordinate = {row: this.playersCurrentRow, col: this.playersCurrentCol-1}
+    } else if ( e.key === "ArrowRight" ) {
+      coordinate = {row: this.playersCurrentRow, col: this.playersCurrentCol+1}
+    } else if ( e.key === "ArrowUp" ) {
+      coordinate = {row: this.playersCurrentRow-1, col: this.playersCurrentCol}
+    } else if ( e.key === "ArrowDown" ) {
+      coordinate = {row: this.playersCurrentRow+1, col: this.playersCurrentCol}
+    }
+    return coordinate
+  }
+
+  attemptMove(coordinate) {
+    if (this.nothingExistsAt(coordinate) && this.staysInMaze(coordinate) && document.querySelector("#idiotSoundEl")) {
+      const oldPlayerPositionDivEl = document.querySelector("#player")
+      oldPlayerPositionDivEl.parentNode.removeChild(oldPlayerPositionDivEl)
+
+      this.playersCurrentRow = coordinate.row
+      this.playersCurrentCol = coordinate.col
+
+      this.renderPlayer()
+      this.playerFinish()
+    } else if (document.querySelector("#idiotSoundEl")) {
+      document.querySelector("#idiotSoundEl").play()
+    }
+  }
+
+  move(e) {
+    let newCoordinate = this.translateKeyEventIntoCoordinate(e)
+    this.attemptMove(newCoordinate)
+  }
+
+  asyncCheckLoser(timeAllowed) {
+    setTimeout(() => {
+      if (!this.completedMaze()) {
+        const mazeController = new MazeController(document.querySelector('.grid-container'))
+        mazeController.renderLoserScreen()
+      }
+    }, timeAllowed)
+  }
+
+  asyncTimer(timeAllowed) {
+    const timerEl = document.querySelector(".timer")
+    const timerRefreshInterval = 250
+    setInterval(() => {
+      const currentTimeLeft = Math.floor((timeAllowed-(Date.now()-this.startTime))/1000)
+      if (currentTimeLeft >= 2) {
+        timerEl.innerHTML = `<h1 class='time-font'>${currentTimeLeft} seconds remain</h1>`
+      } else if (currentTimeLeft === 1 ){
+        timerEl.innerHTML = `<h1 class='time-font'>${currentTimeLeft} second remains</h1>`
+      }
+    }, timerRefreshInterval)
   }
 }

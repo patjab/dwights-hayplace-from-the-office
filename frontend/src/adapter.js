@@ -65,9 +65,16 @@ class Adapter {
     return fetch(baseURL, options).then(r => r.json())
   }
 
+  getMazeUsers() {
+    const baseURL = `http://localhost:3000/maze_users/`
+    return fetch(baseURL).then(r => r.json())
+  }
+
   getMazeUser(id) {
     const baseURL = `http://localhost:3000/maze_users/${id}`
     return fetch(baseURL).then(r => r.json())
   }
+
+
 
 }

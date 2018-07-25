@@ -1,47 +1,69 @@
-class Character {
-  constructor(character) {
-    this.maze = character.maze // from the belongs_to relationship Character has
+const Character = (function() {
 
-    // Initialized randomly, not from database
-    const randomPosition = this.maze.randomEmptyPosition()
-    this.currentCoordinateRow = randomPosition.row
-    this.currentCoordinateCol = randomPosition.col
-  }
+  let id = 0
 
-  move() {
+  return class {
+    constructor(character) {
+      this.name = character.name
+      this.maze = character.maze
 
-    let coordinate;
-    if ( Math.floor(Math.random()*2) == 0 ) {
-      coordinate = {row: this.currentCoordinateRow + Math.floor(Math.random()*3)-1,
-        col: this.currentCoordinateCol}
-    } else {
-      coordinate = {row: this.currentCoordinateRow,
-        col: this.currentCoordinateCol + Math.floor(Math.random()*3)-1}
+      const randomPosition = this.maze.randomEmptyPosition()
+      this.currentCoordinateRow = randomPosition.row
+      this.currentCoordinateCol = randomPosition.col
+
+      this.kevinImg = document.createElement("IMG")
+      this.kevinImg.src = `./media/${this.name}.jpg`
+      this.kevinImg.style.width = "50%"
+      this.kevinImg.style.height = "50%"
+
+      this.id = ++id
     }
 
-    if (this.maze.nothingExistsAt(coordinate) && this.maze.staysInMaze(coordinate)) {
-        const oldPlayerPositionDivEl = document.querySelector("#kevin")
-        oldPlayerPositionDivEl.parentNode.removeChild(oldPlayerPositionDivEl)
-
+    decideWhereToMove() {
+      let coordinate = this.getPossibleSpot()
+      if (this.maze.nothingExistsAt(coordinate) && this.maze.staysInMaze(coordinate)) {
         this.currentCoordinateRow = coordinate.row
         this.currentCoordinateCol = coordinate.col
-
-        this.rerenderCharacter()
       }
+    }
+
+    getPossibleSpot() {
+      let coordinate;
+      if ( Math.floor(Math.random()*2) == 0 ) {
+        coordinate = {
+          row: this.currentCoordinateRow + Math.floor(Math.random()*3)-1,
+          col: this.currentCoordinateCol }
+        } else {
+          coordinate = {
+            row: this.currentCoordinateRow,
+            col: this.currentCoordinateCol + Math.floor(Math.random()*3)-1 }
+          }
+          return coordinate
+    }
+
+    removeCharacterFromOldSpot() {
+      const oldPlayerPositionDivEl = document.querySelector(`#${this.name}${this.id}`)
+      oldPlayerPositionDivEl ? oldPlayerPositionDivEl.parentNode.removeChild(oldPlayerPositionDivEl) : null
+    }
+
+    reappearInNewSpot(interval) {
+      const kevinPositionEl = this.maze.getElementAt(this.currentCoordinateRow, this.currentCoordinateCol)
+      const divEl = document.createElement("div")
+      divEl.id = `${this.name}${this.id}`
+
+      !this.maze.isGameOver() ? divEl.appendChild(this.kevinImg) : clearInterval(interval)
+      !this.maze.isGameOver() ? kevinPositionEl.appendChild(divEl) : clearInterval(interval)
+    }
+
+    moveAround(speed) {
+      const interval = setInterval(() => {
+        this.decideWhereToMove()
+        this.removeCharacterFromOldSpot()
+        this.reappearInNewSpot(interval)
+      }, speed)
+    }
+
   }
 
-  rerenderCharacter() {
-    const kevinPositionEl = this.maze.getElementAt(this.currentCoordinateRow, this.currentCoordinateCol)
 
-    const divEl = document.createElement("div")
-    divEl.setAttribute("id", "kevin")
-
-    const kevinImg = document.createElement("IMG");
-    kevinImg.setAttribute("src", "./media/kevin.jpg");
-    kevinImg.setAttribute("width", "60%");
-    kevinImg.setAttribute("height", "60%");
-
-    divEl.appendChild(kevinImg)
-    kevinPositionEl.appendChild(divEl)
-  }
-}
+})()

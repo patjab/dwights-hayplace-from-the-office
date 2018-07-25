@@ -48,9 +48,14 @@ class MazeUser {
 
   nothingExistsAt(inputCoordinate) {
     try {
-      return (this.getElementAt(inputCoordinate.row, inputCoordinate.col).children.length === 0) || (inputCoordinate.row === this.maze.maze_finish_row && inputCoordinate.col === this.maze.maze_finish_col)
+      return this.getElementAt(inputCoordinate.row, inputCoordinate.col).children.length === 0
     } catch(err) {}
   }
+
+  dundieExistsAt(inputCoordinate) {
+    return inputCoordinate.row === this.maze.maze_finish_row && inputCoordinate.col === this.maze.maze_finish_col
+  }
+
 
   staysInMaze(inputCoordinate) {
     return ((inputCoordinate.row >= 0) && (inputCoordinate.row < this.maze.size)
@@ -129,7 +134,8 @@ class MazeUser {
   }
 
   attemptMove(coordinate) {
-    if (this.nothingExistsAt(coordinate) && this.staysInMaze(coordinate) && document.querySelector("#idiotSoundEl")) {
+    // LOOK HERE LATER FOR FIX IN CONDINATIONAL AND OTHER SIMILAR PLACES, CHARACTER.JS FOR INSTANCE
+    if ((this.nothingExistsAt(coordinate) || this.dundieExistsAt(coordinate)) && this.staysInMaze(coordinate) && document.querySelector("#idiotSoundEl")) {
       const oldPlayerPositionDivEl = document.querySelector("#player")
       oldPlayerPositionDivEl.parentNode.removeChild(oldPlayerPositionDivEl)
 

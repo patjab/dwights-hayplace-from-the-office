@@ -14,6 +14,10 @@ class Maze {
     return document.querySelector(`[data-row='${row}'][data-col='${col}']`)
   }
 
+  isGameOver() {
+    return !this.getElementAt(0, 0)
+  }
+
   randomEmptyPosition() {
     let potentialRow, potentialCol
     do {
@@ -30,9 +34,12 @@ class Maze {
 
   nothingExistsAt(inputCoordinate) {
     try {
-      return (this.getElementAt(inputCoordinate.row, inputCoordinate.col).children.length === 0) || (inputCoordinate.row === this.finishRow && inputCoordinate.col === this.finishCol)
-    } catch(err) {
-    }
+      return this.getElementAt(inputCoordinate.row, inputCoordinate.col).children.length === 0
+    } catch(err) {}
+  }
+
+  dundieExistsAt(inputCoordinate) {
+    return inputCoordinate.row === this.maze_finish_row && inputCoordinate.col === this.maze_finish_col
   }
 
   staysInMaze(inputCoordinate) {

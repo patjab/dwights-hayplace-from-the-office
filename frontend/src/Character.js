@@ -19,6 +19,14 @@ const Character = (function() {
       this.id = ++id
     }
 
+    moveAround(speed) {
+      const moveAroundInterval = setInterval(() => {
+        this.decideWhereToMove()
+        this.removeCharacterFromOldSpot()
+        this.reappearInNewSpot(moveAroundInterval)
+      }, speed)
+    }
+
     decideWhereToMove() {
       let coordinate = this.getPossibleSpot()
       if (this.maze.nothingExistsAt(coordinate) && this.maze.staysInMaze(coordinate)) {
@@ -54,16 +62,5 @@ const Character = (function() {
       !this.maze.isGameOver() ? divEl.appendChild(this.kevinImg) : clearInterval(interval)
       !this.maze.isGameOver() ? kevinPositionEl.appendChild(divEl) : clearInterval(interval)
     }
-
-    moveAround(speed) {
-      const interval = setInterval(() => {
-        this.decideWhereToMove()
-        this.removeCharacterFromOldSpot()
-        this.reappearInNewSpot(interval)
-      }, speed)
-    }
-
   }
-
-
 })()

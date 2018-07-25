@@ -56,7 +56,6 @@ document.addEventListener('DOMContentLoaded', () => {
               let previousImgText = document.querySelector(`[data-text-index='${previousSelection}']`)
               previousImgText.style.color = '#666666'
 
-
               let currentImg = document.querySelector(`[data-img-index='${currentSelection}']`)
               currentImg.src = currentImg.src.substring(0, currentImg.src.length-6) + 'Color.jpg'
               let currentImgText = document.querySelector(`[data-text-index='${currentSelection}']`)
@@ -81,8 +80,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     currentMazeUser = new MazeUser(mazeUser)
                     currentMazeUser.renderMaze()
                     CharacterController.renderKevin(currentMaze)
-                    CharacterController.renderLink(currentMaze)
-                    CharacterController.renderLink(currentMaze)
                     currentMazeUser.asyncCheckLoser(timeAllowed)
                     currentMazeUser.asyncTimer(timeAllowed)
                     document.addEventListener('keydown', currentMazeUser.move.bind(currentMazeUser))})

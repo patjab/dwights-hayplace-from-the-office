@@ -1,11 +1,13 @@
 class CharacterController {
   static renderKevin(maze) {
-    const kevin = new Character({name: "kevin", maze: maze})
+    const kevin = new Kevin({name: "kevin", maze: maze})
     kevin.moveAround(100)
-  }
-
-  static renderLink(maze) {
-    const link = new Character({name: "link", maze: maze})
-    link.moveAround(100)
+    const chiliInterval = setInterval( () => {
+      kevin.spillChili.call(kevin)
+      setTimeout(kevin.cleanupChili, 5000 )
+    }, 10000 )
+    setTimeout( () => {
+      clearInterval(chiliInterval)
+    }, 31000)
   }
 }

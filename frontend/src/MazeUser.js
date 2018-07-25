@@ -134,7 +134,6 @@ class MazeUser {
   }
 
   attemptMove(coordinate) {
-    // LOOK HERE LATER FOR FIX IN CONDINATIONAL AND OTHER SIMILAR PLACES, CHARACTER.JS FOR INSTANCE
     if ((this.nothingExistsAt(coordinate) || this.dundieExistsAt(coordinate)) && this.staysInMaze(coordinate) && document.querySelector("#idiotSoundEl")) {
       const oldPlayerPositionDivEl = document.querySelector("#player")
       oldPlayerPositionDivEl.parentNode.removeChild(oldPlayerPositionDivEl)
@@ -166,7 +165,7 @@ class MazeUser {
   asyncTimer(timeAllowed) {
     const timerEl = document.querySelector(".timer")
     const timerRefreshInterval = 250
-    setInterval(() => {
+    const timerInterval = setInterval(() => {
       const currentTimeLeft = Math.floor((timeAllowed-(Date.now()-this.startTime))/1000)
       if (currentTimeLeft >= 2) {
         timerEl.innerHTML = `<h1 class='time-font'>${currentTimeLeft} seconds remain</h1>`
@@ -174,5 +173,6 @@ class MazeUser {
         timerEl.innerHTML = `<h1 class='time-font'>${currentTimeLeft} second remains</h1>`
       }
     }, timerRefreshInterval)
+    setTimeout(()=>clearInterval(timerInterval), timeAllowed+1)
   }
 }

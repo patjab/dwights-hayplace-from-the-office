@@ -81,6 +81,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     currentMazeUser = new MazeUser(mazeUser)
                     currentMazeUser.renderMaze()
                     CharacterController.renderKevin(currentMaze)
+                    CharacterController.renderLink(currentMaze)
+                    CharacterController.renderLink(currentMaze)
                     currentMazeUser.asyncCheckLoser(timeAllowed)
                     currentMazeUser.asyncTimer(timeAllowed)
                     document.addEventListener('keydown', currentMazeUser.move.bind(currentMazeUser))})

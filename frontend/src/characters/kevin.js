@@ -25,7 +25,7 @@ class Kevin extends Character {
         }
       }
     }
-    document.querySelector("#famousChiliSoundEl").play()
+    document.querySelector("#famousChiliSoundEl") ? document.querySelector("#famousChiliSoundEl").play() : null
   }
 
   cleanupChili() {

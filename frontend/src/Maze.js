@@ -1,7 +1,7 @@
 class Maze {
   constructor(maze) {
     this.id = maze.id
-    this.characters = maze.characters
+    this.characters = [] //changed from maze.characters which is null NEEDS TO BE REVIEWED
     this.hayPatches = maze.hay_patches
     this.size = maze.size
     this.initialRow = maze.initial_row
@@ -16,6 +16,14 @@ class Maze {
 
   isGameOver() {
     return !this.getElementAt(0, 0)
+  }
+
+  addCharacter(character) {
+    this.characters.push(character)
+  }
+
+  getCharacters() {
+    return this.characters
   }
 
   randomEmptyPosition() {

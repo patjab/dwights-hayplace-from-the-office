@@ -120,7 +120,7 @@ class MazeUser {
 
   translateKeyEventIntoCoordinate(e) {
     e.preventDefault()
-    let coordinate;
+    let coordinate = {row: this.playersCurrentRow, col: this.playersCurrentCol};
     if ( e.key === "ArrowLeft" ) {
       coordinate = {row: this.playersCurrentRow, col: this.playersCurrentCol-1}
     } else if ( e.key === "ArrowRight" ) {
@@ -134,7 +134,7 @@ class MazeUser {
   }
 
   attemptMove(coordinate) {
-    if ((this.nothingExistsAt(coordinate) || this.dundieExistsAt(coordinate)) && this.staysInMaze(coordinate) && document.querySelector("#idiotSoundEl")) {
+    if ( (this.nothingExistsAt(coordinate) || this.dundieExistsAt(coordinate)) && this.staysInMaze(coordinate) && document.querySelector("#idiotSoundEl")) {
       const oldPlayerPositionDivEl = document.querySelector("#player")
       oldPlayerPositionDivEl.parentNode.removeChild(oldPlayerPositionDivEl)
 
@@ -166,6 +166,7 @@ class MazeUser {
     const timerEl = document.querySelector(".timer")
     const timerRefreshInterval = 250
     const timerInterval = setInterval(() => {
+      // console.log("Timer Interval Still Going")
       const currentTimeLeft = Math.floor((timeAllowed-(Date.now()-this.startTime))/1000)
       if (currentTimeLeft >= 2) {
         timerEl.innerHTML = `<h1 class='time-font'>${currentTimeLeft} seconds remain</h1>`

@@ -3,7 +3,7 @@ const Character = (function() {
   let id = 0
 
   return class {
-    constructor(character) {
+    constructor(character, maze) {
       this.name = character.name
       this.maze = character.maze
 
@@ -16,15 +16,24 @@ const Character = (function() {
       this.kevinImg.style.width = "50%"
       this.kevinImg.style.height = "50%"
 
+      this.moveAroundInterval
+
+      this.maze.addCharacter(this)
+
       this.id = ++id
     }
 
     moveAround(speed) {
-      const moveAroundInterval = setInterval(() => {
+      this.moveAroundInterval = setInterval(() => {
         this.decideWhereToMove()
         this.removeCharacterFromOldSpot()
-        this.reappearInNewSpot(moveAroundInterval)
+        this.reappearInNewSpot(this.moveAroundInterval)
+        // console.log("Move Around Interval Still Going")
       }, speed)
+    }
+
+    getMoveAroundInterval() {
+      return this.moveAroundInterval
     }
 
     decideWhereToMove() {

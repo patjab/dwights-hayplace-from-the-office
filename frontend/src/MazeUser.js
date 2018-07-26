@@ -1,11 +1,11 @@
 class MazeUser {
-  constructor(mazeUser) {
+  constructor(mazeUser, currentMaze) {
     this.id = mazeUser.id
     this.playersCurrentRow = mazeUser.players_current_row
     this.playersCurrentCol = mazeUser.players_current_col
     this.finished_time = mazeUser.finished_time
     this.user = mazeUser.user
-    this.maze = mazeUser.maze
+    this.maze = currentMaze
     this.startTime = Date.now()
   }
 
@@ -31,7 +31,7 @@ class MazeUser {
   }
 
   renderExit() {
-    const finishEl = this.getElementAt(this.maze.maze_finish_row, this.maze.maze_finish_col)
+    const finishEl = this.getElementAt(this.maze.finishRow, this.maze.finishCol)
     const dundieImgEl = document.createElement("IMG");
     dundieImgEl.setAttribute("id", "dundie");
     dundieImgEl.setAttribute("src", "./media/dundie.jpg");
@@ -53,7 +53,7 @@ class MazeUser {
   }
 
   dundieExistsAt(inputCoordinate) {
-    return inputCoordinate.row === this.maze.maze_finish_row && inputCoordinate.col === this.maze.maze_finish_col
+    return inputCoordinate.row === this.maze.finishRow && inputCoordinate.col === this.maze.finishCol
   }
 
 
@@ -63,11 +63,15 @@ class MazeUser {
   }
 
   finishedPosition() {
-    return (this.playersCurrentRow===this.maze.maze_finish_row) && (this.playersCurrentCol===this.maze.maze_finish_col)
+    return (this.playersCurrentRow===this.maze.finishRow) && (this.playersCurrentCol===this.maze.finishCol)
+  }
+
+  timeLeft() {
+    return Math.floor((Date.now() - this.startTime)/1000)
   }
 
   stopTheClock() {
-    this.finished_time = Math.floor((Date.now() - this.startTime)/1000)
+    this.finished_time = this.timeLeft()
     const adapter = new Adapter()
     adapter.createTime(this.id, this.finished_time)
   }
@@ -111,6 +115,7 @@ class MazeUser {
   playerFinish() {
     if (this.finishedPosition()) {
       this.stopTheClock()
+      this.cleanUpAllMazeIntervals()
       this.renderWinningScreen()
       this.renderWinningAudio()
       const mazeController = new MazeController(document.querySelector('#winnerDiv'))
@@ -118,9 +123,14 @@ class MazeUser {
     }
   }
 
+  cleanUpAllMazeIntervals() {
+    this.maze.getCharacters().forEach(character => character.cleanUpAllIntervals())
+    clearInterval(this.timerInterval)
+  }
+
   translateKeyEventIntoCoordinate(e) {
     e.preventDefault()
-    let coordinate;
+    let coordinate = {row: this.playersCurrentRow, col: this.playersCurrentCol};
     if ( e.key === "ArrowLeft" ) {
       coordinate = {row: this.playersCurrentRow, col: this.playersCurrentCol-1}
     } else if ( e.key === "ArrowRight" ) {
@@ -134,7 +144,7 @@ class MazeUser {
   }
 
   attemptMove(coordinate) {
-    if ((this.nothingExistsAt(coordinate) || this.dundieExistsAt(coordinate)) && this.staysInMaze(coordinate) && document.querySelector("#idiotSoundEl")) {
+    if ( (this.nothingExistsAt(coordinate) || this.dundieExistsAt(coordinate)) && this.staysInMaze(coordinate) && !this.maze.isGameOver()) {
       const oldPlayerPositionDivEl = document.querySelector("#player")
       oldPlayerPositionDivEl.parentNode.removeChild(oldPlayerPositionDivEl)
 
@@ -143,7 +153,7 @@ class MazeUser {
 
       this.renderPlayer()
       this.playerFinish()
-    } else if (document.querySelector("#idiotSoundEl")) {
+    } else if (!this.maze.isGameOver()) {
       document.querySelector("#idiotSoundEl").play()
     }
   }
@@ -157,6 +167,7 @@ class MazeUser {
     setTimeout(() => {
       if (!this.completedMaze()) {
         const mazeController = new MazeController(document.querySelector('.grid-container'))
+        this.cleanUpAllMazeIntervals()
         mazeController.renderLoserScreen()
       }
     }, timeAllowed)
@@ -165,7 +176,7 @@ class MazeUser {
   asyncTimer(timeAllowed) {
     const timerEl = document.querySelector(".timer")
     const timerRefreshInterval = 250
-    const timerInterval = setInterval(() => {
+    this.timerInterval = setInterval(() => {
       const currentTimeLeft = Math.floor((timeAllowed-(Date.now()-this.startTime))/1000)
       if (currentTimeLeft >= 2) {
         timerEl.innerHTML = `<h1 class='time-font'>${currentTimeLeft} seconds remain</h1>`
@@ -173,6 +184,5 @@ class MazeUser {
         timerEl.innerHTML = `<h1 class='time-font'>${currentTimeLeft} second remains</h1>`
       }
     }, timerRefreshInterval)
-    setTimeout(()=>clearInterval(timerInterval), timeAllowed+1)
   }
 }

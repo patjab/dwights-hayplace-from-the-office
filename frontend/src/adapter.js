@@ -52,7 +52,6 @@ class Adapter {
     return fetch(baseURL, options).then(r => r.json())
   }
 
-  // {user: u, maze: m}
   createMazeUser(mazeUser) {
     const baseURL = `http://localhost:3000/maze_users`
     const options = {

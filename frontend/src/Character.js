@@ -3,7 +3,7 @@ const Character = (function() {
   let id = 0
 
   return class {
-    constructor(character) {
+    constructor(character, maze) {
       this.name = character.name
       this.maze = character.maze
 
@@ -16,14 +16,19 @@ const Character = (function() {
       this.kevinImg.style.width = "50%"
       this.kevinImg.style.height = "50%"
 
+      this.moveAroundInterval
+      this.abilitiesInterval = []
+
+      this.maze.addCharacter(this)
+
       this.id = ++id
     }
 
     moveAround(speed) {
-      const moveAroundInterval = setInterval(() => {
+      this.moveAroundInterval = setInterval(() => {
         this.decideWhereToMove()
         this.removeCharacterFromOldSpot()
-        this.reappearInNewSpot(moveAroundInterval)
+        this.reappearInNewSpot(this.moveAroundInterval)
       }, speed)
     }
 
@@ -59,8 +64,18 @@ const Character = (function() {
       const divEl = document.createElement("div")
       divEl.id = `${this.name}${this.id}`
 
-      !this.maze.isGameOver() ? divEl.appendChild(this.kevinImg) : clearInterval(interval)
-      !this.maze.isGameOver() ? kevinPositionEl.appendChild(divEl) : clearInterval(interval)
+      !this.maze.isGameOver() ? divEl.appendChild(this.kevinImg) : null
+      !this.maze.isGameOver() ? kevinPositionEl.appendChild(divEl) : null
+    }
+
+    getAllIntervals() {
+      return [this.moveAroundInterval, ...this.abilitiesInterval]
+    }
+
+    cleanUpAllIntervals() {
+      this.getAllIntervals().forEach(interval => clearInterval(interval))
+      this.moveAroundInterval = undefined
+      this.abilitiesInterval = []
     }
   }
 })()

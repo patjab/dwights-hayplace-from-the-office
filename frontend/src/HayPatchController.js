@@ -1,6 +1,5 @@
 class HayPatchController {
   static renderHayPatches(maze) {
-
     const adapter = new Adapter()
     adapter.getMaze(maze.id).then((data) => {
       const mazeObj = new Maze(data)

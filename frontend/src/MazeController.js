@@ -8,12 +8,12 @@ class MazeController {
     const idiotSoundEl = document.createElement("audio")
     idiotSoundEl.setAttribute("id", "idiotSoundEl")
     idiotSoundEl.src = "./media/idiot.mp3"
-    document.body.appendChild(idiotSoundEl)
+    document.head.appendChild(idiotSoundEl)
 
     const kevinsChiliSoundEl = document.createElement("audio")
     kevinsChiliSoundEl.setAttribute("id", "famousChiliSoundEl")
     kevinsChiliSoundEl.src = "./media/kevinsFamousChili.mp3"
-    document.body.appendChild(kevinsChiliSoundEl)
+    document.head.appendChild(kevinsChiliSoundEl)
 
     this.gridContainerEl.style['grid-template-columns'] = `repeat(${size}, ${100/(size+2)}vw)`
     this.gridContainerEl.style['grid-template-rows'] = `repeat(${size}, ${100/(size+2)}vh)`
@@ -160,10 +160,7 @@ class MazeController {
   }
 
   renderLoserScreen() {
-    document.querySelector("#idiotSoundEl").pause()
-    document.querySelector("#famousChiliSoundEl").pause()
-
-    while (document.body.firstChild) {document.body.removeChild(document.body.firstChild)}
+    while (document.body.firstChild) { document.body.removeChild(document.body.firstChild) }
 
     const videoEl = document.createElement("video")
     videoEl.setAttribute("width", "auto")

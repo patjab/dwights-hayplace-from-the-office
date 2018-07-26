@@ -77,13 +77,11 @@ document.addEventListener('DOMContentLoaded', () => {
                   mazeController.renderMaze(currentMaze.size)
                   adapter.createMazeUser({maze_user: {user_id: currentUser.id, maze_id: currentMaze.id}})
                   .then(mazeUser => {
-                    currentMazeUser = new MazeUser(mazeUser)
+                    currentMazeUser = new MazeUser(mazeUser, currentMaze)
                     currentMazeUser.renderMaze()
 
                     CharacterController.addGeneric(currentMaze)
                     CharacterController.addKevin(currentMaze)
-
-                    console.log(currentMaze.getCharacters())
 
                     currentMazeUser.asyncCheckLoser(timeAllowed)
                     currentMazeUser.asyncTimer(timeAllowed)

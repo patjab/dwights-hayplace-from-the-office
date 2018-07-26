@@ -3,11 +3,7 @@ class CharacterController {
     const kevin = new Kevin({name: "kevin", maze: maze})
     kevin.moveAround(100)
 
-    const chiliInterval = setInterval( () => {
-      kevin.spillChili.call(kevin)
-      setTimeout(kevin.cleanupChili, 5000)
-      // console.log("Chili Interval Still Going")
-    }, 10000 )
+    const chiliInterval = kevin.chiliCycle()
     setTimeout( () => {
       clearInterval(chiliInterval)
     }, 31000)

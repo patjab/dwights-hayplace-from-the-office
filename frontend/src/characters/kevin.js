@@ -25,11 +25,19 @@ class Kevin extends Character {
         }
       }
     }
-    document.querySelector("#famousChiliSoundEl") ? document.querySelector("#famousChiliSoundEl").play() : null
+    // add 3 sec warning here
+    document.querySelector("#famousChiliSoundEl").play()
   }
+
 
   cleanupChili() {
     document.querySelectorAll('.chili').forEach(chiliEl => chiliEl.parentNode.removeChild(chiliEl))
   }
 
+  chiliCycle() {
+    this.abilitiesInterval.push(setInterval( () => {
+      this.spillChili()
+      setTimeout(this.cleanupChili, 5000)
+    }, 10000 ))
+  }
 }

@@ -17,6 +17,7 @@ const Character = (function() {
       this.kevinImg.style.height = "50%"
 
       this.moveAroundInterval
+      this.abilitiesInterval = []
 
       this.maze.addCharacter(this)
 
@@ -28,12 +29,7 @@ const Character = (function() {
         this.decideWhereToMove()
         this.removeCharacterFromOldSpot()
         this.reappearInNewSpot(this.moveAroundInterval)
-        // console.log("Move Around Interval Still Going")
       }, speed)
-    }
-
-    getMoveAroundInterval() {
-      return this.moveAroundInterval
     }
 
     decideWhereToMove() {
@@ -68,8 +64,18 @@ const Character = (function() {
       const divEl = document.createElement("div")
       divEl.id = `${this.name}${this.id}`
 
-      !this.maze.isGameOver() ? divEl.appendChild(this.kevinImg) : clearInterval(interval)
-      !this.maze.isGameOver() ? kevinPositionEl.appendChild(divEl) : clearInterval(interval)
+      !this.maze.isGameOver() ? divEl.appendChild(this.kevinImg) : null
+      !this.maze.isGameOver() ? kevinPositionEl.appendChild(divEl) : null
+    }
+
+    getAllIntervals() {
+      return [this.moveAroundInterval, ...this.abilitiesInterval]
+    }
+
+    cleanUpAllIntervals() {
+      this.getAllIntervals().forEach(interval => clearInterval(interval))
+      this.moveAroundInterval = undefined
+      this.abilitiesInterval = []
     }
   }
 })()

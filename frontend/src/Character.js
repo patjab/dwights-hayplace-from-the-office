@@ -3,11 +3,11 @@ const Character = (function() {
   let id = 0
 
   return class {
-    constructor(character, maze) {
+    constructor(character) {
       this.name = character.name
-      this.maze = character.maze
+      this.mazeUser = character.mazeUser
 
-      const randomPosition = this.maze.randomEmptyPosition()
+      const randomPosition = this.mazeUser.maze.randomEmptyPosition()
       this.currentCoordinateRow = randomPosition.row
       this.currentCoordinateCol = randomPosition.col
 
@@ -19,9 +19,19 @@ const Character = (function() {
       this.moveAroundInterval
       this.abilitiesInterval = []
 
-      this.maze.addCharacter(this)
+      this.mazeUser.maze.addCharacter(this)
 
       this.id = ++id
+      // this.domId = `${this.name}${this.id}`
+    }
+
+    getDOMId() {
+      return this.domId
+    }
+
+    removeCharacter() {
+      const toBeRemoved = this.mazeUser.maze.getElementAt(this.currentCoordinateRow, this.currentCoordinateCol)
+      toBeRemoved.removeChild(toBeRemoved.firstChild)
     }
 
     moveAround(speed) {
@@ -34,7 +44,7 @@ const Character = (function() {
 
     decideWhereToMove() {
       let coordinate = this.getPossibleSpot()
-      if (this.maze.nothingExistsAt(coordinate) && this.maze.staysInMaze(coordinate)) {
+      if (this.mazeUser.maze.nothingExistsAt(coordinate) && this.mazeUser.maze.staysInMaze(coordinate)) {
         this.currentCoordinateRow = coordinate.row
         this.currentCoordinateCol = coordinate.col
       }
@@ -59,13 +69,13 @@ const Character = (function() {
       oldPlayerPositionDivEl ? oldPlayerPositionDivEl.parentNode.removeChild(oldPlayerPositionDivEl) : null
     }
 
-    reappearInNewSpot(interval) {
-      const kevinPositionEl = this.maze.getElementAt(this.currentCoordinateRow, this.currentCoordinateCol)
+    reappearInNewSpot(interval=null) {
+      const kevinPositionEl = this.mazeUser.maze.getElementAt(this.currentCoordinateRow, this.currentCoordinateCol)
       const divEl = document.createElement("div")
       divEl.id = `${this.name}${this.id}`
 
-      !this.maze.isGameOver() ? divEl.appendChild(this.kevinImg) : null
-      !this.maze.isGameOver() ? kevinPositionEl.appendChild(divEl) : null
+      !this.mazeUser.maze.isGameOver() ? divEl.appendChild(this.kevinImg) : null
+      !this.mazeUser.maze.isGameOver() ? kevinPositionEl.appendChild(divEl) : null
     }
 
     getAllIntervals() {

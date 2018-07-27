@@ -1,6 +1,6 @@
 class CharacterController {
-  static addKevin(maze) {
-    const kevin = new Kevin({name: "kevin", maze: maze})
+  static addKevin(currentMazeUser) {
+    const kevin = new Kevin({name: "kevin", mazeUser: currentMazeUser})
     kevin.moveAround(100)
 
     const chiliInterval = kevin.chiliCycle()
@@ -11,9 +11,15 @@ class CharacterController {
     return kevin
   }
 
-  static addGeneric(maze) {
-    const generic = new Character({name: "link", maze: maze})
+  static addGeneric(currentMazeUser) {
+    const generic = new Character({name: "link", mazeUser: currentMazeUser})
     generic.moveAround(100)
     return generic
+  }
+
+  static addJim(currentMazeUser) {
+    const jim = new Jim({name: "jim", mazeUser: currentMazeUser})
+    jim.moveAround(100)
+    return jim
   }
 }

@@ -8,7 +8,7 @@ class Kevin extends Character {
             col: this.currentCoordinateCol + j
           }
 
-          if (this.maze.nothingExistsAt(inputCoordinate) && !this.maze.dundieExistsAt(inputCoordinate) && this.maze.staysInMaze(inputCoordinate)) {
+          if (this.mazeUser.maze.nothingExistsAt(inputCoordinate) && !this.mazeUser.maze.dundieExistsAt(inputCoordinate) && this.mazeUser.maze.staysInMaze(inputCoordinate)) {
             const chiliImgEl = document.createElement("IMG")
             chiliImgEl.src = `./media/chili.gif`
             chiliImgEl.style.width = "60%"
@@ -19,7 +19,7 @@ class Kevin extends Character {
 
             chiliDivEl.appendChild(chiliImgEl)
 
-            const spaceForChiliEl = this.maze.getElementAt(inputCoordinate.row, inputCoordinate.col)
+            const spaceForChiliEl = this.mazeUser.maze.getElementAt(inputCoordinate.row, inputCoordinate.col)
             spaceForChiliEl.appendChild(chiliDivEl)
           }
         }

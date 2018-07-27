@@ -7,6 +7,36 @@ class MazeUser {
     this.user = mazeUser.user
     this.maze = currentMaze
     this.startTime = Date.now()
+    this.ableToMove = true
+    this.moveHistory = []
+  }
+
+  disableMove() {
+    this.ableToMove = false
+  }
+
+  enableMove() {
+    this.ableToMove = true
+  }
+
+  isMoveEnabled() {
+    return this.ableToMove
+  }
+
+  putMoveInHistory(coordinate) {
+    if ( !this.moveHistory.find(coor => (coor.row === coordinate.row) && (coor.col === coordinate.col)) ) {
+      this.moveHistory.unshift(coordinate)
+    }
+  }
+
+  popFromMoveHistory() {
+    const lastSpot = this.moveHistory[0]
+    this.moveHistory.shift()
+    return lastSpot
+  }
+
+  getMoveHistory() {
+    return this.moveHistory
   }
 
   completedMaze() {
@@ -131,30 +161,38 @@ class MazeUser {
   translateKeyEventIntoCoordinate(e) {
     e.preventDefault()
     let coordinate = {row: this.playersCurrentRow, col: this.playersCurrentCol};
-    if ( e.key === "ArrowLeft" ) {
-      coordinate = {row: this.playersCurrentRow, col: this.playersCurrentCol-1}
-    } else if ( e.key === "ArrowRight" ) {
-      coordinate = {row: this.playersCurrentRow, col: this.playersCurrentCol+1}
-    } else if ( e.key === "ArrowUp" ) {
-      coordinate = {row: this.playersCurrentRow-1, col: this.playersCurrentCol}
-    } else if ( e.key === "ArrowDown" ) {
-      coordinate = {row: this.playersCurrentRow+1, col: this.playersCurrentCol}
+
+    if ( this.isMoveEnabled() ) {
+      if ( e.key === "ArrowLeft" ) {
+        coordinate = {row: this.playersCurrentRow, col: this.playersCurrentCol-1}
+      } else if ( e.key === "ArrowRight" ) {
+        coordinate = {row: this.playersCurrentRow, col: this.playersCurrentCol+1}
+      } else if ( e.key === "ArrowUp" ) {
+        coordinate = {row: this.playersCurrentRow-1, col: this.playersCurrentCol}
+      } else if ( e.key === "ArrowDown" ) {
+        coordinate = {row: this.playersCurrentRow+1, col: this.playersCurrentCol}
+      }
     }
+
     return coordinate
   }
 
-  attemptMove(coordinate) {
-    if ( (this.nothingExistsAt(coordinate) || this.dundieExistsAt(coordinate)) && this.staysInMaze(coordinate) && !this.maze.isGameOver()) {
+  attemptMove(coordinate, log=true) {
+    if ( (this.nothingExistsAt(coordinate) || this.dundieExistsAt(coordinate)) && this.staysInMaze(coordinate) && !this.maze.isGameOver() ) {
       const oldPlayerPositionDivEl = document.querySelector("#player")
       oldPlayerPositionDivEl.parentNode.removeChild(oldPlayerPositionDivEl)
+
+      log ? this.putMoveInHistory({row: this.playersCurrentRow, col: this.playersCurrentCol}) : null
 
       this.playersCurrentRow = coordinate.row
       this.playersCurrentCol = coordinate.col
 
       this.renderPlayer()
       this.playerFinish()
+      return true
     } else if (!this.maze.isGameOver()) {
       document.querySelector("#idiotSoundEl").play()
+      return false
     }
   }
 

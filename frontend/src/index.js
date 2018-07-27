@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const adapter = new Adapter()
   const userController = new UserController(gridContainerEl)
   const mazeController = new MazeController(gridContainerEl)
-  const timeAllowed = 40000
+  const timeAllowed = 100 * 1000
   let currentUser, currentMaze, currentMazeUser
 
   // Until event removers are installed
@@ -80,8 +80,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     currentMazeUser = new MazeUser(mazeUser, currentMaze)
                     currentMazeUser.renderMaze()
 
-                    CharacterController.addGeneric(currentMaze)
-                    CharacterController.addKevin(currentMaze)
+                    CharacterController.addKevin(currentMazeUser)
+                    CharacterController.addJim(currentMazeUser)
 
                     currentMazeUser.asyncCheckLoser(timeAllowed)
                     currentMazeUser.asyncTimer(timeAllowed)

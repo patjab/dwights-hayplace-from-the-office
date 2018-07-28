@@ -22,4 +22,10 @@ class CharacterController {
     jim.moveAround(100)
     return jim
   }
+
+  static addCreed(currentMazeUser) {
+    const creed = new Creed({name: creed, mazeUser: currentMazeUser})
+    creed.moveAround(100)
+    return creed
+  }
 }

@@ -24,8 +24,11 @@ class MazeUser {
   }
 
   putMoveInHistory(coordinate) {
-    if ( !this.moveHistory.find(coor => (coor.row === coordinate.row) && (coor.col === coordinate.col)) ) {
+    const coordinateIncluded = this.moveHistory.find(coor => (coor.row === coordinate.row) && (coor.col === coordinate.col))
+    if ( !coordinateIncluded ) {
       this.moveHistory.unshift(coordinate)
+    } else {
+      while ( this.moveHistory.find(coor => (coor.row === coordinate.row) && (coor.col === coordinate.col)) ) { this.popFromMoveHistory() }
     }
   }
 

@@ -88,7 +88,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     document.addEventListener('keydown', currentMazeUser.move.bind(currentMazeUser))})
                   })
                 }
-
               })
           })
 

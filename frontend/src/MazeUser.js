@@ -226,13 +226,24 @@ class MazeUser {
   asyncTimer(timeAllowed) {
     const timerEl = document.querySelector(".timer")
     const timerRefreshInterval = 250
+    const beginFlashingTime = 11000
+    let flashingInterval
+
     this.timerInterval = setInterval(() => {
       const currentTimeLeft = Math.floor((timeAllowed-(Date.now()-this.startTime))/1000)
+      if (currentTimeLeft < beginFlashingTime/1000) {
+        timerEl.classList += ' shake'
+        let i = 0
+        flashingInterval = setInterval(() => {
+          timerEl.style['background-color'] = (++i % 2 === 0 ? '#FFD700' : 'red')
+        }, 100)
+      }
       if (currentTimeLeft >= 2) {
         timerEl.innerHTML = `<h1 class='time-font'>${currentTimeLeft} seconds remain</h1>`
       } else if (currentTimeLeft === 1 ){
         timerEl.innerHTML = `<h1 class='time-font'>${currentTimeLeft} second remains</h1>`
       }
     }, timerRefreshInterval)
+    setTimeout(()=>clearInterval(flashingInterval), timeAllowed)
   }
 }

@@ -1,8 +1,8 @@
 class Adapter {
-  getHayPatches() {
-    const baseURL = 'http://localhost:3000/hay_patches'
-    return fetch(baseURL).then(r => r.json())
-  }
+  // getHayPatches() {
+  //   const baseURL = 'http://localhost:3000/hay_patches'
+  //   return fetch(baseURL).then(r => r.json())
+  // }
 
   getMaze(id) {
     const baseURL = `http://localhost:3000/mazes/${id}`
@@ -14,10 +14,10 @@ class Adapter {
     return fetch(baseURL).then(r => r.json())
   }
 
-  getUser(id) {
-    const baseURL = `http://localhost:3000/users/${id}`
-    return fetch(baseURL).then(r => r.json())
-  }
+  // getUser(id) {
+  //   const baseURL = `http://localhost:3000/users/${id}`
+  //   return fetch(baseURL).then(r => r.json())
+  // }
 
   createUser(user) {
     const baseURL =  `http://localhost:3000/users`
@@ -69,10 +69,10 @@ class Adapter {
     return fetch(baseURL).then(r => r.json())
   }
 
-  getMazeUser(id) {
-    const baseURL = `http://localhost:3000/maze_users/${id}`
-    return fetch(baseURL).then(r => r.json())
-  }
+  // getMazeUser(id) {
+  //   const baseURL = `http://localhost:3000/maze_users/${id}`
+  //   return fetch(baseURL).then(r => r.json())
+  // }
 
 
 

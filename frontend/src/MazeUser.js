@@ -9,6 +9,15 @@ class MazeUser {
     this.startTime = Date.now()
     this.ableToMove = true
     this.moveHistory = []
+    this.confused = false
+  }
+
+  makeConfused() {
+    this.confused = true
+  }
+
+  notConfused() {
+    this.confused = false
   }
 
   disableMove() {
@@ -166,13 +175,13 @@ class MazeUser {
     let coordinate = {row: this.playersCurrentRow, col: this.playersCurrentCol};
 
     if ( this.isMoveEnabled() ) {
-      if ( e.key === "ArrowLeft" ) {
+      if ( (e.key === "ArrowLeft" && !this.confused) || (e.key === "ArrowRight" && this.confused) ) {
         coordinate = {row: this.playersCurrentRow, col: this.playersCurrentCol-1}
-      } else if ( e.key === "ArrowRight" ) {
+      } else if ( (e.key === "ArrowRight" && !this.confused) || (e.key === "ArrowLeft" && this.confused) ) {
         coordinate = {row: this.playersCurrentRow, col: this.playersCurrentCol+1}
-      } else if ( e.key === "ArrowUp" ) {
+      } else if ( (e.key === "ArrowUp" && !this.confused) || (e.key === "ArrowDown" && this.confused) ) {
         coordinate = {row: this.playersCurrentRow-1, col: this.playersCurrentCol}
-      } else if ( e.key === "ArrowDown" ) {
+      } else if ( (e.key === "ArrowDown" && !this.confused) || (e.key === "ArrowUp" && this.confused) ) {
         coordinate = {row: this.playersCurrentRow+1, col: this.playersCurrentCol}
       }
     }

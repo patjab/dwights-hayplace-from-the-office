@@ -82,6 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     CharacterController.addKevin(currentMazeUser)
                     CharacterController.addJim(currentMazeUser)
+                    CharacterController.addCreed(currentMazeUser)
 
                     currentMazeUser.asyncCheckLoser(timeAllowed)
                     currentMazeUser.asyncTimer(timeAllowed)

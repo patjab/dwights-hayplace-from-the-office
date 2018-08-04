@@ -8,6 +8,7 @@ class Maze {
     this.initialCol = maze.initial_col
     this.finishRow = maze.maze_finish_row
     this.finishCol = maze.maze_finish_col
+    this.finishedRendering = false
   }
 
   getElementAt(row, col) {
@@ -16,6 +17,14 @@ class Maze {
 
   isGameOver() {
     return !this.getElementAt(0, 0)
+  }
+
+  isFinishedRendering() {
+    return this.finishedRendering
+  }
+
+  setToFinishedRendering() {
+    this.finishedRendering = true
   }
 
   addCharacter(character) {
@@ -27,6 +36,8 @@ class Maze {
   }
 
   randomEmptyPosition() {
+    while ( !this.isFinishedRendering() ) {}
+
     let potentialRow, potentialCol
     do {
       potentialRow = Math.floor(Math.random()*this.size)

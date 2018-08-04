@@ -21,8 +21,10 @@ class Creed extends Character {
       this.mazeUser.makeConfused()
       document.querySelector('.timer').style['background-color'] = 'purple'
       setTimeout(() => {
-        document.querySelector('.timer').style['background-color'] = 'orange'
-        this.mazeUser.notConfused()
+        if ( !this.mazeUser.maze.isGameOver() ) {
+          document.querySelector('.timer').style['background-color'] = 'orange'
+          this.mazeUser.notConfused()
+        }
       }, 10000)
     }
   }

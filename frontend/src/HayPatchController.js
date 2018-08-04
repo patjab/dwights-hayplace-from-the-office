@@ -1,15 +1,10 @@
 class HayPatchController {
   static renderHayPatches(maze) {
-    const adapter = new Adapter()
-    adapter.getMaze(maze.id).then((data) => {
-      const mazeObj = new Maze(data)
-
-      data.hay_patches.forEach((hayPatch) => {
-        const hayPatchObj = new HayPatch(hayPatch)
-        const hayPatchDivEl = mazeObj.getElementAt(hayPatchObj.currentCoordinateRow, hayPatchObj.currentCoordinateCol)
-        hayPatchObj.renderHayPatch(hayPatchDivEl)
-      })
+    maze.hayPatches.forEach((hayPatch) => {
+      const hayPatchObj = new HayPatch(hayPatch)
+      const hayPatchDivEl = maze.getElementAt(hayPatchObj.currentCoordinateRow, hayPatchObj.currentCoordinateCol)
+      hayPatchObj.appendHayPatch(hayPatchDivEl)
     })
-
+    maze.setToFinishedRendering()
   }
 }

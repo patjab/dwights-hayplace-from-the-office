@@ -22,7 +22,6 @@ const Character = (function() {
       this.mazeUser.maze.addCharacter(this)
 
       this.id = ++id
-      // this.domId = `${this.name}${this.id}`
     }
 
     getDOMId() {
@@ -53,15 +52,15 @@ const Character = (function() {
     getPossibleSpot() {
       let coordinate;
       if ( Math.floor(Math.random()*2) == 0 ) {
+      coordinate = {
+        row: this.currentCoordinateRow + Math.floor(Math.random()*3)-1,
+        col: this.currentCoordinateCol }
+      } else {
         coordinate = {
-          row: this.currentCoordinateRow + Math.floor(Math.random()*3)-1,
-          col: this.currentCoordinateCol }
-        } else {
-          coordinate = {
-            row: this.currentCoordinateRow,
-            col: this.currentCoordinateCol + Math.floor(Math.random()*3)-1 }
-          }
-          return coordinate
+          row: this.currentCoordinateRow,
+          col: this.currentCoordinateCol + Math.floor(Math.random()*3)-1 }
+        }
+      return coordinate
     }
 
     removeCharacterFromOldSpot() {

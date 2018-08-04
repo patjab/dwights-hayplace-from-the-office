@@ -77,8 +77,8 @@ class MazeUser {
     const dundieImgEl = document.createElement("IMG");
     dundieImgEl.setAttribute("id", "dundie");
     dundieImgEl.setAttribute("src", "./media/dundie.jpg");
-    dundieImgEl.setAttribute("width", "80%");
-    dundieImgEl.setAttribute("height", "80%");
+    dundieImgEl.setAttribute("width", "90%");
+    dundieImgEl.setAttribute("height", "90%");
     finishEl.append(dundieImgEl)
   }
 
@@ -231,6 +231,7 @@ class MazeUser {
 
     this.timerInterval = setInterval(() => {
       const currentTimeLeft = Math.floor((timeAllowed-(Date.now()-this.startTime))/1000)
+
       if (currentTimeLeft < beginFlashingTime/1000) {
         timerEl.classList += ' shake'
         let i = 0
@@ -239,7 +240,7 @@ class MazeUser {
         }, 100)
       }
       if (currentTimeLeft >= 2) {
-        timerEl.innerHTML = `<h1 class='time-font'>${currentTimeLeft} seconds remain</h1>`
+        timerEl.innerHTML = `<h1 class='time-font'>${currentTimeLeft} second remain</h1>`
       } else if (currentTimeLeft === 1 ){
         timerEl.innerHTML = `<h1 class='time-font'>${currentTimeLeft} second remains</h1>`
       }

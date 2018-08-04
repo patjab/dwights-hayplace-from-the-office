@@ -8,7 +8,7 @@ const HayPatch = (function() {
       all.push(this)
     }
 
-    renderHayPatch(hayPatchDivEl) {
+    appendHayPatch(hayPatchDivEl) {
       hayPatchDivEl.className += " " + "patchStyle"
       const hayPic = document.createElement("IMG");
       hayPic.setAttribute("src", "./media/hay.png");

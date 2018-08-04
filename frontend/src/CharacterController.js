@@ -11,12 +11,6 @@ class CharacterController {
     return kevin
   }
 
-  static addGeneric(currentMazeUser) {
-    const generic = new Character({name: "link", mazeUser: currentMazeUser})
-    generic.moveAround(100)
-    return generic
-  }
-
   static addJim(currentMazeUser) {
     const jim = new Jim({name: "jim", mazeUser: currentMazeUser})
     jim.moveAround(100)
@@ -27,5 +21,11 @@ class CharacterController {
     const creed = new Creed({name: "creed", mazeUser: currentMazeUser})
     creed.moveAround(100)
     return creed
+  }
+
+  static addGeneric(currentMazeUser) {
+    const generic = new Character({name: "link", mazeUser: currentMazeUser})
+    generic.moveAround(100)
+    return generic
   }
 }
